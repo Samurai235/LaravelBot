@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+    app:
+        image: thecodingmachine/php:8.0-v4-apache
+        ports:
+            - "8080:80"
+        volumes:
+            - ./:/var/www/html
+        environment:
+            TZ: "Asia/Novosibirsk"
+            PHP_EXTENSION_PGSQL: 1
+            PHP_INI_SHORT_OPEN_TAG: 1
+            PHP_INI_ERROR_REPORTING: E_ALL
+            PHP_INI_MBSTRING__FUNC_OVERLOAD: 2
+            APACHE_DOCUMENT_ROOT: "public/"
+
+    mysql:
+        image: mysql:5.7
+        environment:
+            TZ: "Asia/Novosibirsk"
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        command:
+            - "--character-set-server=utf8"
+            - "--collation-server=utf8_unicode_ci"
+            - "--transaction-isolation=READ-COMMITTED"
+            - "--innodb_flush_log_at_trx_commit=2"
+            - "--innodb_flush_method=O_DIRECT"
+            - "--max_allowed_packet=32505856"
+        volumes:
+            - mysql-data:/var/lib/mysql
+
+    adminer:
+        image: adminer:latest
+        ports:
+            - "8081:8080"
+volumes:
+    mysql-data:
