@@ -1,106 +1,63 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\Enum\OptionsFood;
+use App\Models\PollAnswer;
+use App\Repositories\PollAnswerRepository;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
-class WebhookController extends Controller
+final class WebhookController extends Controller
 {
+    public function __construct(private PollAnswerRepository $answerRepository,)
+    {
+    }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    public function index(): Response
     {
         $tg = Telegram::bot('mybot');
+
 //        $tg->sendMessage(
 //            [
 //                'chat_id' => -893046653,//env('TG_CHAT_ID'),
 //                'text' => 'Хули палишь',
 //            ]
 //        );
-        $tg->sendPoll(
-            [
-                'chat_id' => -893046653,//env('TG_CHAT_ID'),
-                'question' => 'Хули палишь?',
-                'options' => [
-                    '16565',
-                    '33434',
-                    '33434',
-                ],
-                'is_anonymous' => false,
-            ]
-        );
-        Log::debug(json_encode($request->toArray()));
-    }
+        $getWebhookUpdate = $tg->getWebhookUpdate();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+        if ($getWebhookUpdate->message?->text === '/startpoll') {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $tg->sendPoll(
+                [
+                    'chat_id' => env('CHAT_ID'),
+                    'question' => 'botsalam',
+                    'options' => array_values(OptionsFood::toArray()),
+                    'is_anonymous' => false,
+                    'open_period' => 1800,
+                ]
+            );
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($tg->getWebhookUpdate()->pollAnswer) {
+            $pollAnswer = new PollAnswer(
+                $getWebhookUpdate->pollAnswer->pollId,
+                $getWebhookUpdate->pollAnswer->user,
+                $getWebhookUpdate->pollAnswer->optionIds
+            );
+            $this->answerRepository->add($pollAnswer);
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $r = $tg->getWebhookUpdate(false);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        // $pollAnswer = $r->pollAnswer;
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        //  $optionIds = json_encode($pollAnswer->optionIds);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return new Response();
     }
 }

@@ -8,34 +8,33 @@ services:
         volumes:
             - ./:/var/www/html
         environment:
-            TZ: "Asia/Novosibirsk"
-            PHP_EXTENSION_PGSQL: 1
-            PHP_INI_SHORT_OPEN_TAG: 1
-            PHP_INI_ERROR_REPORTING: E_ALL
-            PHP_INI_MBSTRING__FUNC_OVERLOAD: 2
+            PHP_EXTENSION_IGBINARY: "1"
+            PHP_EXTENSION_INTL: "1"
+            PHP_EXTENSION_PGSQL: "1"
+            PHP_EXTENSION_PDO_PGSQL: "1"
+            PHP_EXTENSION_REDIS: "1"
+            PHP_EXTENSION_GD: "1"
+            PHP_EXTENSION_XDEBUG: "1"
+            PHP_INI_MEMORY_LIMIT: "1G"
+            PHP_INI_XDEBUG__IDEKEY: "PHPSTORM"
             APACHE_DOCUMENT_ROOT: "public/"
-
-    mysql:
-        image: mysql:5.7
+        depends_on:
+            - postgres
+    postgres:
+        image: postgres:15.1-alpine3.16
         environment:
-            TZ: "Asia/Novosibirsk"
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-            MYSQL_DATABASE: ${DB_DATABASE}
-            MYSQL_USER: ${DB_USERNAME}
-            MYSQL_PASSWORD: ${DB_PASSWORD}
-        command:
-            - "--character-set-server=utf8"
-            - "--collation-server=utf8_unicode_ci"
-            - "--transaction-isolation=READ-COMMITTED"
-            - "--innodb_flush_log_at_trx_commit=2"
-            - "--innodb_flush_method=O_DIRECT"
-            - "--max_allowed_packet=32505856"
+            POSTGRES_DB: polldb
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: secret
+            POSTGRES_INITDB_ARGS: "--locale=ru_RU.utf8"
+        ports:
+            - "5433:5432"
         volumes:
-            - mysql-data:/var/lib/mysql
+            - postgres-data:/var/lib/postgresql/data
 
     adminer:
         image: adminer:latest
         ports:
             - "8081:8080"
 volumes:
-    mysql-data:
+    postgres-data:

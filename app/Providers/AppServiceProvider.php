@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Interfaces\PollAnswerInterface;
+use App\Repositories\PollAnswerRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,9 +13,9 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        //
+        $this->app->bind(PollAnswerInterface::class, PollAnswerRepository::class);
     }
 
     /**
@@ -21,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }
