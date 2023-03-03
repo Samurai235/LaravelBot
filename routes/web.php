@@ -15,11 +15,11 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 |
 */
 
-//Route::get('/', function () {
-//    \Illuminate\Support\Facades\Http::get('https://api.tlgr.org/bot'.env('TELEGRAM_BOT_TOKEN'). '/setWebhook?url=https://5639-195-208-156-188.in.ngrok.io/webhook');
-//});
+Route::get('/webhook', function () {
+    $response =  \Illuminate\Support\Facades\Http::get('https://api.tlgr.org/bot'.env('TELEGRAM_BOT_TOKEN'). '/setWebhook?url=https://034f-195-208-156-188.in.ngrok.io/');
+dd($response);
+});
 
-Route::post('/webhook', [WebhookController::class,'index']);
-//Route::get('/', [WebhookController::class,'index']);
+Route::post('/', [WebhookController::class,'index']);
 
 
