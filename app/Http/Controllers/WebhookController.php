@@ -19,19 +19,14 @@ final class WebhookController extends Controller
     public function index(): Response
     {
         $tg = Telegram::bot('mybot');
-//        $tg->sendMessage(
-//            [
-//                'chat_id' => -893046653,//env('TG_CHAT_ID'),
-//                'text' => 'Хули палишь',
-//            ]
-//        );
-        $getWebhookUpdate = $tg->getWebhookUpdate();
 
+        $getWebhookUpdate = $tg->getWebhookUpdate();
         if ($getWebhookUpdate->message?->text === '/startpoll') {
+
             /** @noinspection PhpUnhandledExceptionInspection */
             $tg->sendPoll(
                 [
-                    'chat_id' => env('TG_CHAT_ID'),
+                    'chat_id' => config('telegram.bots.mybot.chat_id'),
                     'question' => 'Что заказываем?',
                     'options' => json_encode(array_values(OptionsFood::toArray())),
                     'is_anonymous' => false,

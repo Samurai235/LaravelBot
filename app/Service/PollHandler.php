@@ -22,8 +22,8 @@ final class PollHandler
 
         $checkUsers = DB::table('poll_answers')
             ->select('user')
-            ->where('user', '=', $method->user->id)
-            ->where('poll_id', '=', $method->getPollId())
+            ->where('user', $method->user->id)
+            ->where('poll_id', $method->getPollId())
             ->first();
 
         $options = '';
@@ -33,8 +33,8 @@ final class PollHandler
 
         if ($checkUsers) {
             DB::table('poll_answers')
-                ->where('id', '=', (string)$checkUsers->user)
-               // ->where('poll_id', '=', $method->getPollId())
+                ->where('user', $checkUsers->user)
+                ->where('poll_id', $method->getPollId())
                 ->update([
                     'poll_options' => $options,
                     'updated_at' => now(),
@@ -48,7 +48,5 @@ final class PollHandler
                 'updated_at' => now(),
             ]);
         }
-
-
     }
 }

@@ -16,7 +16,7 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 */
 
 Route::get('/webhook', function () {
-    $response =  \Illuminate\Support\Facades\Http::get('https://api.tlgr.org/bot'.env('TELEGRAM_BOT_TOKEN'). '/setWebhook?url=https://034f-195-208-156-188.in.ngrok.io/');
+    $response =  \Illuminate\Support\Facades\Http::get('https://api.tlgr.org/bot'. config('telegram.bots.mybot.token'). '/setWebhook?url=https://057b-5-44-168-99.in.ngrok.io/');
 dd($response);
 });
 
