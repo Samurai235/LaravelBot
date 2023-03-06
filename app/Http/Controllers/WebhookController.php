@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\OptionsFood;
 use App\Repositories\PollAnswerRepository;
-use App\Service\PollHandler;
+use App\Service\Handlers\PollHandler;
 use Illuminate\Http\Response;
 use Telegram\Bot\Laravel\Facades\Telegram;
 

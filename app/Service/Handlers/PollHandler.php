@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Handlers;
 
+use App\Service\HandlersInterface;
 
 use Telegram\Bot\Objects\BaseObject;
 use Telegram\Bot\Objects\PollAnswer;
 use Illuminate\Support\Facades\DB;
 
-final class PollHandler
+final class PollHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
