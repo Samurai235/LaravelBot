@@ -16,23 +16,38 @@ final class WebhookController extends Controller
     {
     }
 
+    /**
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
     public function index(): Response
     {
         $tg = Telegram::bot('mybot');
 
         $getWebhookUpdate = $tg->getWebhookUpdate();
+
         if ($getWebhookUpdate->message?->text === '/startpoll') {
 
             /** @noinspection PhpUnhandledExceptionInspection */
-            $tg->sendPoll(
+            $createdPoll = $tg->sendPoll(
                 [
                     'chat_id' => config('telegram.bots.mybot.chat_id'),
                     'question' => 'Что заказываем?',
-                    'options' => json_encode(array_values(OptionsFood::toArray())),
+                    'options' => json_encode(OptionsFood::toArray()),
                     'is_anonymous' => false,
                 ]
             );
+
         }
+
+//сущность poll: chat_id, poll_id, message_id, active
+//        if ($getWebhookUpdate->message?->text === '/stoppoll') {
+//            $tg->stopPoll([
+//                'chat_id' => config('telegram.bots.mybot.chat_id'),
+//                'message_id' => 390,
+//
+//            ]);
+//        }
+
 
         $collection = [];
         $collection[] = $this->pollHandler;
@@ -47,6 +62,7 @@ final class WebhookController extends Controller
 
             $handler->handle($getWebhookUpdate->getRelatedObject());
         }
+
 
         return new Response();
     }

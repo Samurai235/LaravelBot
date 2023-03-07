@@ -14,7 +14,8 @@ final class OptionsFood
     public static function toArray(): array
     {
         $newRef = new \ReflectionClass(self::class);
-        return $newRef->getConstants(\ReflectionClassConstant::IS_PUBLIC);
+        return array_values($newRef->getConstants(\ReflectionClassConstant::IS_PUBLIC));
 
     }
+
 }
