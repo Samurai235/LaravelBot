@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enum\OptionsFood;
+use App\Models\PollAnswer as PollAnswerModel;
 use App\Repositories\PollAnswerRepository;
 use App\Service\Handlers\PollHandler;
 use Illuminate\Http\Response;
@@ -12,7 +13,10 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 
 final class WebhookController extends Controller
 {
-    public function __construct(private PollAnswerRepository $answerRepository, private PollHandler $pollHandler)
+    public function __construct(
+        private PollAnswerRepository $answerRepository,
+        private PollHandler $pollHandler,
+    )
     {
     }
 
@@ -21,6 +25,7 @@ final class WebhookController extends Controller
      */
     public function index(): Response
     {
+
         $tg = Telegram::bot('mybot');
 
         $getWebhookUpdate = $tg->getWebhookUpdate();

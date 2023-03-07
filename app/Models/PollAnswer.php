@@ -18,11 +18,6 @@ final class PollAnswer extends Model
     private UuidInterface $id;
 
     /**
-     * @var string
-     */
-    private string $pollId;
-
-    /**
      * @var User
      */
     private User $user;
@@ -33,14 +28,11 @@ final class PollAnswer extends Model
     private array $optionIds;
 
     public function __construct(
-        string $pollId,
         User $user,
         array $optionIds,
         array $attributes = []
     ) {
         parent::__construct($attributes);
-
-        $this->pollId = $pollId;
         $this->user = $user;
         $this->optionIds = $optionIds;
     }
@@ -53,18 +45,6 @@ final class PollAnswer extends Model
     public function setId(UuidInterface $id): self
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getPollId(): string
-    {
-        return $this->pollId;
-    }
-
-    public function setPollId(string $pollId): self
-    {
-        $this->pollId = $pollId;
 
         return $this;
     }
@@ -91,5 +71,10 @@ final class PollAnswer extends Model
         $this->optionIds = $optionIds;
 
         return $this;
+    }
+
+    public function getPoll(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Poll::class, 'poll_id', 'id');
     }
 }

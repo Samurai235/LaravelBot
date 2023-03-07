@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,11 +12,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('poll_answers', function (Blueprint $table) {
+        Schema::create('polls', function (Blueprint $table) {
             $table->id();
-            $table->integer('poll_id')->index();
-            $table->string('user');
-            $table->string('poll_options');
+            $table->string('poll_id');
+            $table->string('message_id');
+            $table->string('chat_id');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('poll_answers');
+        Schema::dropIfExists('polls');
     }
 };
