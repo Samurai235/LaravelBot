@@ -9,7 +9,7 @@ use App\Service\HandlersInterface;
 use Telegram\Bot\Objects\BaseObject;
 use Telegram\Bot\Objects\PollAnswer;
 use Illuminate\Support\Facades\DB;
-
+//Нужно переписать добавление в базу для моделей
 final class PollHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
@@ -41,6 +41,7 @@ final class PollHandler implements HandlersInterface
                     'updated_at' => now(),
                 ]);
         } else {
+
             DB::table('poll_answers')->insert([
                 'poll_id' => $method->getPollId(),
                 'user' => $method->user->id,

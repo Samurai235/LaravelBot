@@ -25,11 +25,11 @@ final class PollAnswer extends Model
     /**
      * @var array
      */
-    private array $optionIds;
+    private string $optionIds;
 
     public function __construct(
         User $user,
-        array $optionIds,
+        string $optionIds,
         array $attributes = []
     ) {
         parent::__construct($attributes);
@@ -61,12 +61,12 @@ final class PollAnswer extends Model
         return $this;
     }
 
-    public function getOptionIds(): array
+    public function getOptionIds(): string
     {
         return $this->optionIds;
     }
 
-    public function setOptionIds(array $optionIds): self
+    public function setOptionIds(string $optionIds): self
     {
         $this->optionIds = $optionIds;
 

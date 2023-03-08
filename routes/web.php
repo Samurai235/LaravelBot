@@ -14,12 +14,6 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/webhook', function () {
-    $response =  \Illuminate\Support\Facades\Http::get('https://api.tlgr.org/bot'. config('telegram.bots.mybot.token'). '/setWebhook?url=https://2a67-5-44-168-99.in.ngrok.io/');
-dd($response);
-});
-
-Route::post('/', [WebhookController::class,'index']);
+Route::post('/', [WebhookController::class, 'index']);
 
 
