@@ -15,7 +15,7 @@ final class WebhookController extends Controller
 {
     public function __construct(
         private PollAnswerRepository $answerRepository,
-        private PollHandler $pollHandler,
+        private PollHandler          $pollHandler,
     )
     {
     }
@@ -53,19 +53,24 @@ final class WebhookController extends Controller
 //            ]);
 //        }
 
-
         $collection = [];
         $collection[] = $this->pollHandler;
+        $relatedObject = $getWebhookUpdate->getRelatedObject();
 
         foreach (
             $collection as $handler
         ) {
-
-            if (!$handler->supports($getWebhookUpdate->getRelatedObject())) {
+            if (!$handler->supports($relatedObject)) {
                 continue;
             }
-
-            $handler->handle($getWebhookUpdate->getRelatedObject());
+            try {
+                $handler->handle($relatedObject);
+            } catch (\Throwable $error) {
+                $tg->sendMessage([
+                    'chat_id' => config('telegram.bots.mybot.chat_id'),
+                    'text' => $error->getMessage()
+                ]);
+            }
         }
 
 

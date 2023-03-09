@@ -8,8 +8,7 @@ use App\Service\HandlersInterface;
 
 use Telegram\Bot\Objects\BaseObject;
 use Telegram\Bot\Objects\PollAnswer;
-use Illuminate\Support\Facades\DB;
-//Нужно переписать добавление в базу для моделей
+
 final class PollHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
@@ -21,10 +20,17 @@ final class PollHandler implements HandlersInterface
     {
         /** @var PollAnswer $method */
 
-        $checkUsers = DB::table('poll_answers')
-            ->select('user')
-            ->where('user', $method->user->id)
+        $some = \App\Models\Poll::where('id', $method->getPollId())
+            ->where('active', true)
+            ->first();
+
+        if (!$some) {
+            throw new \RuntimeException('Не найден id опроса');
+        }
+
+        $checkUsers = \App\Models\PollAnswer::where('user', $method->user->id)
             ->where('poll_id', $method->getPollId())
+            ->select('user')
             ->first();
 
         $options = '';
@@ -33,16 +39,15 @@ final class PollHandler implements HandlersInterface
         }
 
         if ($checkUsers) {
-            DB::table('poll_answers')
-                ->where('user', $checkUsers->user)
+            \App\Models\PollAnswer::where('user', $checkUsers->user)
                 ->where('poll_id', $method->getPollId())
+                ->select('user')
                 ->update([
                     'poll_options' => $options,
                     'updated_at' => now(),
                 ]);
         } else {
-
-            DB::table('poll_answers')->insert([
+            \App\Models\PollAnswer::create([
                 'poll_id' => $method->getPollId(),
                 'user' => $method->user->id,
                 'poll_options' => $options,
@@ -50,5 +55,6 @@ final class PollHandler implements HandlersInterface
                 'updated_at' => now(),
             ]);
         }
+
     }
 }

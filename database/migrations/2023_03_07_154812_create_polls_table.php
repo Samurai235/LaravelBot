@@ -13,8 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('polls', function (Blueprint $table) {
-            $table->id();
-            $table->string('poll_id');
+            $table->integer('id')->index()->unique()->primary();
             $table->string('message_id');
             $table->string('chat_id');
             $table->boolean('active')->default(true);
