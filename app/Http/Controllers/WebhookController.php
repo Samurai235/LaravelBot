@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enum\OptionsFood;
-use App\Models\PollAnswer as PollAnswerModel;
 use App\Repositories\PollAnswerRepository;
+use App\Service\Handlers\StartPollMessageHandler;
 use App\Service\Handlers\PollHandler;
 use Illuminate\Http\Response;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -14,8 +14,9 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 final class WebhookController extends Controller
 {
     public function __construct(
-        private PollAnswerRepository $answerRepository,
-        private PollHandler          $pollHandler,
+        private PollAnswerRepository    $answerRepository,
+        private PollHandler             $pollHandler,
+        private StartPollMessageHandler $messageHandler,
     )
     {
     }
@@ -27,22 +28,7 @@ final class WebhookController extends Controller
     {
 
         $tg = Telegram::bot('mybot');
-
         $getWebhookUpdate = $tg->getWebhookUpdate();
-
-        if ($getWebhookUpdate->message?->text === '/startpoll') {
-
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $createdPoll = $tg->sendPoll(
-                [
-                    'chat_id' => config('telegram.bots.mybot.chat_id'),
-                    'question' => 'Что заказываем?',
-                    'options' => json_encode(OptionsFood::toArray()),
-                    'is_anonymous' => false,
-                ]
-            );
-
-        }
 
 //сущность poll: chat_id, poll_id, message_id, active
 //        if ($getWebhookUpdate->message?->text === '/stoppoll') {
@@ -55,6 +41,7 @@ final class WebhookController extends Controller
 
         $collection = [];
         $collection[] = $this->pollHandler;
+        $collection[] = $this->messageHandler;
         $relatedObject = $getWebhookUpdate->getRelatedObject();
 
         foreach (

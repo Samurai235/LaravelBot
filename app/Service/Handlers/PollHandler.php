@@ -20,11 +20,11 @@ final class PollHandler implements HandlersInterface
     {
         /** @var PollAnswer $method */
 
-        $some = \App\Models\Poll::where('id', $method->getPollId())
+        $checkPoll = \App\Models\Poll::where('id', $method->getPollId())
             ->where('active', true)
             ->first();
 
-        if (!$some) {
+        if (!$checkPoll) {
             throw new \RuntimeException('Не найден id опроса');
         }
 
