@@ -1,23 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-final class PollAnswer extends Model
+class Order extends Model
 {
     use HasFactory;
 
-    protected $table = 'poll_answers';
+    protected $table = 'orders';
 
     protected $fillable =
         [
+            'name',
+            'user_id',
             'poll_id',
-            'user',
-            'poll_options',
         ];
 
     protected $dates = [

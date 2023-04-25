@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('poll_answers', function (Blueprint $table) {
             $table->id();
-            $table->integer('poll_id')->index();
-            $table->string('user');
-            $table->string('poll_options');
+            $table->string('poll_id')->index();
+            $table->integer('user');
+            $table->string('poll_options')->default('');
             $table->timestamps();
         });
     }

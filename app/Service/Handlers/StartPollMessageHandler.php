@@ -32,7 +32,20 @@ final class StartPollMessageHandler implements HandlersInterface
                 'is_anonymous' => false,
             ]
         );
-        //создать запись в базу
+
+        $checkPoll = \App\Models\Poll::where('id', $method->getPollId())
+            ->where('active', true)
+            ->first();
+
+        if (!$checkPoll) {
+            \App\Models\Poll::create([
+                'id' => $createdPoll['poll']['id'],
+                'message_id' => $createdPoll['message_id'],
+                'chat_id' => $createdPoll['chat']['id'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
     }
 }

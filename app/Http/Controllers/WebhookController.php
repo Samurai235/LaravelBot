@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enum\OptionsFood;
 use App\Repositories\PollAnswerRepository;
 use App\Service\Handlers\StartPollMessageHandler;
 use App\Service\Handlers\PollHandler;
@@ -14,7 +13,6 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 final class WebhookController extends Controller
 {
     public function __construct(
-        private PollAnswerRepository    $answerRepository,
         private PollHandler             $pollHandler,
         private StartPollMessageHandler $messageHandler,
     )
@@ -30,7 +28,6 @@ final class WebhookController extends Controller
         $tg = Telegram::bot('mybot');
         $getWebhookUpdate = $tg->getWebhookUpdate();
 
-//сущность poll: chat_id, poll_id, message_id, active
 //        if ($getWebhookUpdate->message?->text === '/stoppoll') {
 //            $tg->stopPoll([
 //                'chat_id' => config('telegram.bots.mybot.chat_id'),
@@ -59,8 +56,6 @@ final class WebhookController extends Controller
                 ]);
             }
         }
-
-
         return new Response();
     }
 
