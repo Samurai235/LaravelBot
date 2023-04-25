@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Repositories\PollAnswerRepository;
 use App\Service\Handlers\StartPollMessageHandler;
 use App\Service\Handlers\PollHandler;
+use App\Service\Handlers\StopPollMessageHandler;
 use Illuminate\Http\Response;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
@@ -14,7 +14,8 @@ final class WebhookController extends Controller
 {
     public function __construct(
         private PollHandler             $pollHandler,
-        private StartPollMessageHandler $messageHandler,
+        private StartPollMessageHandler $startPollMessageHandler,
+        private StopPollMessageHandler  $stopPollMessageHandler,
     )
     {
     }
@@ -27,18 +28,12 @@ final class WebhookController extends Controller
 
         $tg = Telegram::bot('mybot');
         $getWebhookUpdate = $tg->getWebhookUpdate();
-
-//        if ($getWebhookUpdate->message?->text === '/stoppoll') {
-//            $tg->stopPoll([
-//                'chat_id' => config('telegram.bots.mybot.chat_id'),
-//                'message_id' => 390,
-//
-//            ]);
-//        }
+        //сделать проверку что если прошло 30 мин вызывать stoppoll
 
         $collection = [];
         $collection[] = $this->pollHandler;
-        $collection[] = $this->messageHandler;
+        $collection[] = $this->startPollMessageHandler;
+        $collection[] = $this->stopPollMessageHandler;
         $relatedObject = $getWebhookUpdate->getRelatedObject();
 
         foreach (
