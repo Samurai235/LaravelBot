@@ -23,6 +23,14 @@ final class StartPollMessageHandler implements HandlersInterface
         /** @var Message $method */
         $tg = Telegram::bot('mybot');
 
+        $checkActivePolls = \App\Models\Poll::all()
+            ->where('active', true)
+            ->first();
+
+        if ($checkActivePolls) {
+            throw new \RuntimeException('Уже есть незавершенные опросы требуется /stoppoll');
+        }
+
         /** @noinspection PhpUnhandledExceptionInspection */
         $createdPoll = $tg->sendPoll(
             [

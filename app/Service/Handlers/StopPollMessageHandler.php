@@ -63,8 +63,9 @@ final class StopPollMessageHandler implements HandlersInterface
                     'chat_id' => (int)$activePoll->chat_id,
                     'parse_mode' => 'HTML',
                     'text' => 'Кушаем из: ' . $stopPoll->options[$winKey]['text'] . ". \n"
-                        . 'Для оформления заказа напишите <code>/order</code> и список заказа по шаблону - "Блюда: общая цена заказа"'
+                        . 'Для оформления заказа напишите <code>/order</code> и список заказа по шаблону - ' . "\n" . '"/order ' . "\n" . 'Блюдо1' . "\n" . 'Блюдо2 ' . "\n" . ': общая цена заказа"'
                 ]);
+
             } else {
                 $tg->sendMessage([
                     'chat_id' => (int)$activePoll->chat_id,
