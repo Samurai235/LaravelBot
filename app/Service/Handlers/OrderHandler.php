@@ -16,7 +16,8 @@ final class OrderHandler implements HandlersInterface
     public function supports(BaseObject $method): bool
     {
         return $method instanceof Message
-            && stripos($method->text, '/order') === 0;
+            && stripos($method->text, '/order') === 0
+            && !$method->from->isBot;
     }
 
     public function handle(BaseObject $method): void
@@ -24,22 +25,28 @@ final class OrderHandler implements HandlersInterface
         /** @var Message $method */
         $tg = Telegram::bot('mybot');
         $orders = [];
-        if (!$method->from->isBot) {
-            $strToArrOrder = explode("\n", $method->text);
 
-            foreach ($strToArrOrder as &$item) {
-                if ($item === '/order') {
-                    continue;
-                }
+        $strToArrOrder = explode("\n", $method->text);
+        $name = '';
+        foreach ($strToArrOrder as &$item) {
 
-                if (stripos($item, ':') === 0) {
-                    $item = str_replace(':', '', $item);
-                    if ((int)preg_match("/^\d+$/", $item)) {
-                        $orders[] = (int)$item;
-                    }
-                }
+            if ($item === '/order') {
+                continue;
             }
+
+            if (stripos($item, ':') === 0) {
+                $item = str_replace(':', '', $item);
+                if ((int)preg_match("/^\d+$/", $item)) {
+                    $orders[$method->messageId]['price'] = (int)$item;
+                }
+               continue;
+            }
+
+            $orders[$method->messageId]['user'] = $method->from->id;
+            $name .= $item . ';';
         }
+        $orders[$method->messageId]['order'] = $name;
+        unset($item);
         dd($orders);
     }
 }
