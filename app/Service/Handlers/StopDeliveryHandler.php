@@ -15,7 +15,8 @@ final class StopDeliveryHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && $method->text === '/stopdelivery';
+        return $method instanceof Message && ($method->text === '/stopdelivery'
+                || $method->text === '/stopdelivery@MyTelegramDeliveryBot');
     }
 
     /**
@@ -51,7 +52,7 @@ final class StopDeliveryHandler implements HandlersInterface
             }
 
             $tg->sendMessage([
-                'chat_id' => (int)$method->chat->id,
+                'chat_id' => $method->chat->id,
                 'parse_mode' => 'HTML',
                 'text' => 'Общий заказ для последнего опроса:' . "\n"
                     . $orderText . "\n"

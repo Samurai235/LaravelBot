@@ -68,7 +68,7 @@ final class OrderHandler implements HandlersInterface
                     ]);
 
                 $tg->sendMessage([
-                    'chat_id' => (int)$method->chat->id,
+                    'chat_id' => $method->chat->id,
                     'parse_mode' => 'HTML',
                     'text' => 'Обновил заказ от ' . $orders['user_name']
                 ]);
@@ -85,7 +85,7 @@ final class OrderHandler implements HandlersInterface
                 ]);
 
                 $tg->sendMessage([
-                    'chat_id' => (int)$method->chat->id,
+                    'chat_id' => $method->chat->id,
                     'parse_mode' => 'HTML',
                     'text' => 'Создал заказ от ' . $orders['user_name']
                 ]);

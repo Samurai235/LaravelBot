@@ -16,7 +16,8 @@ final class StopPollMessageHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && $method->text === '/stoppoll';
+        return $method instanceof Message && ($method->text === '/stoppoll'
+                || $method->text === '/stoppoll@MyTelegramDeliveryBot');
     }
 
     /**
@@ -34,7 +35,7 @@ final class StopPollMessageHandler implements HandlersInterface
         if ($activePoll) {
 
             $stopPoll = $tg->stopPoll([
-                'chat_id' => (int)$activePoll->chat_id,
+                'chat_id' => $activePoll->chat_id,
                 'message_id' => (int)$activePoll->message_id,
             ]);
 
@@ -60,7 +61,7 @@ final class StopPollMessageHandler implements HandlersInterface
 
             if ($winKey !== null) {
                 $tg->sendMessage([
-                    'chat_id' => (int)$activePoll->chat_id,
+                    'chat_id' => $activePoll->chat_id,
                     'parse_mode' => 'HTML',
                     'text' => 'Кушаем из: ' . $stopPoll->options[$winKey]['text'] . ". \n"
                         . 'Для оформления заказа напишите <code>/order</code> и список заказа по шаблону - ' . "\n" . '"/order ' . "\n" . 'Блюдо1' . "\n" . 'Блюдо2 ' . "\n" . ': общая цена заказа"'
@@ -68,7 +69,7 @@ final class StopPollMessageHandler implements HandlersInterface
 
             } else {
                 $tg->sendMessage([
-                    'chat_id' => (int)$activePoll->chat_id,
+                    'chat_id' => $activePoll->chat_id,
                     'text' => 'Ничего не заказываем, пустой результат голосования'
                 ]);
             }
