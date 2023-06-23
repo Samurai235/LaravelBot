@@ -15,7 +15,9 @@ class Order extends Model
         [
             'name',
             'user_id',
+            'user_name',
             'poll_id',
+            'price',
         ];
 
     protected $dates = [

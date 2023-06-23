@@ -37,16 +37,59 @@ final class OrderHandler implements HandlersInterface
             if (stripos($item, ':') === 0) {
                 $item = str_replace(':', '', $item);
                 if ((int)preg_match("/^\d+$/", $item)) {
-                    $orders[$method->messageId]['price'] = (int)$item;
+                    $orders['price'] = (float)$item;
                 }
-               continue;
+                continue;
             }
 
-            $orders[$method->messageId]['user'] = $method->from->id;
-            $name .= $item . ';';
+            $orders['user_id'] = $method->from->id;
+            $orders['user_name'] = $method->from->first_name;
+            $name .= preg_replace('/\W+/u', '', $item) . ';';
         }
-        $orders[$method->messageId]['order'] = $name;
+        $orders['order'] = htmlspecialchars($name);
         unset($item);
-        dd($orders);
+
+        $lastClosedPoll = \App\Models\Poll::where('active', false)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $checkDuplicate = \App\Models\Order::where('user_id', $orders['user_id'])
+            ->where('poll_id', $lastClosedPoll->id)
+            ->first();
+
+        if ($lastClosedPoll) {
+            if ($checkDuplicate) {
+                \App\Models\Order::where('user_id', $orders['user_id'])
+                    ->where('poll_id', $lastClosedPoll->id)
+                    ->update([
+                        'name' => $orders['order'],
+                        'price' => $orders['price'],
+                        'updated_at' => now(),
+                    ]);
+
+                $tg->sendMessage([
+                    'chat_id' => (int)$method->chat->id,
+                    'parse_mode' => 'HTML',
+                    'text' => 'Обновил заказ от ' . $orders['user_name']
+                ]);
+
+            } else {
+                \App\Models\Order::create([
+                    'name' => $orders['order'],
+                    'user_id' => $orders['user_id'],
+                    'user_name' => $orders['user_name'],
+                    'poll_id' => $lastClosedPoll->id,
+                    'price' => $orders['price'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $tg->sendMessage([
+                    'chat_id' => (int)$method->chat->id,
+                    'parse_mode' => 'HTML',
+                    'text' => 'Создал заказ от ' . $orders['user_name']
+                ]);
+            }
+        }
     }
 }

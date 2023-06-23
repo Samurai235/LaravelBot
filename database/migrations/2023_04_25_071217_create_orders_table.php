@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id()->unique();
             $table->string('name')->default('');
             $table->integer('user_id');
-            $table->integer('poll_id');
+            $table->string('user_name');
+            $table->string('poll_id');
+            $table->double('price')->default(0);
             $table->timestamps();
         });
     }

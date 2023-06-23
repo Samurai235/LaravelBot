@@ -8,6 +8,7 @@ use App\Service\Handlers\OrderHandler;
 use App\Service\Handlers\StartPollMessageHandler;
 use App\Service\Handlers\PollHandler;
 use App\Service\Handlers\StopPollMessageHandler;
+use App\Service\Handlers\StopDeliveryHandler;
 use Illuminate\Http\Response;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
@@ -18,6 +19,7 @@ final class WebhookController extends Controller
         private StartPollMessageHandler $startPollMessageHandler,
         private StopPollMessageHandler  $stopPollMessageHandler,
         private OrderHandler  $orderHandler,
+        private StopDeliveryHandler  $deliveryHandler,
     )
     {
     }
@@ -37,6 +39,7 @@ final class WebhookController extends Controller
         $collection[] = $this->startPollMessageHandler;
         $collection[] = $this->stopPollMessageHandler;
         $collection[] = $this->orderHandler;
+        $collection[] = $this->deliveryHandler;
         $relatedObject = $getWebhookUpdate->getRelatedObject();
 
         foreach (
