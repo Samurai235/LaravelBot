@@ -46,16 +46,16 @@ final class StopPollMessageHandler implements HandlersInterface
                 ]);
 
             $winKey = null;
+
             foreach ($stopPoll->options as $key => $option) {
+
                 if ($option->voterCount === 0) {
                     continue;
                 }
                 $winCount = $option->voterCount;
-
-                if ($winCount < $option->voterCount) {
-                    $winKey = $key;
-                } elseif ($winCount === $option->voterCount) {
-                    $winKey = rand($winKey, $key );
+                $winKey = $key;
+                if ($winCount === $option->voterCount) {
+                    $winKey = rand($winKey, $key);
                 }
             }
 
@@ -66,12 +66,8 @@ final class StopPollMessageHandler implements HandlersInterface
                     'text' => 'Кушаем из: ' . $stopPoll->options[$winKey]['text'] . ". \n"
                         . 'Для оформления заказа напишите <code>/order</code> и список заказа по шаблону - ' . "\n" . '"/order ' . "\n" . 'Блюдо1' . "\n" . 'Блюдо2 ' . "\n" . ': общая цена заказа"'
                 ]);
-
             } else {
-                $tg->sendMessage([
-                    'chat_id' => $activePoll->chat_id,
-                    'text' => 'Ничего не заказываем, пустой результат голосования'
-                ]);
+                throw new \RuntimeException('Ничего не заказываем, пустой результат голосования');
             }
 
         }

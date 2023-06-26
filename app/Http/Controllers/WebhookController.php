@@ -43,8 +43,6 @@ final class WebhookController extends Controller
         $collection[] = $this->deliveryHandler;
         $relatedObject = $getWebhookUpdate->getRelatedObject();
 
-        dump($relatedObject);
-
         foreach (
             $collection as $handler
         ) {

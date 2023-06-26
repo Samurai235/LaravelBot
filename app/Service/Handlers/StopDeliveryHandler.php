@@ -27,14 +27,19 @@ final class StopDeliveryHandler implements HandlersInterface
         /** @var Message $method */
         $tg = Telegram::bot('mybot');
 
-        $lastClosedPoll = \App\Models\Poll::where('active', false)
-            ->orderBy('created_at', 'desc')
-            ->first();
+        $lastClosedPoll = \App\Models\Poll::all()
+            ->where('active', false)
+            ->last();
 
         if ($lastClosedPoll) {
-            $orders = \App\Models\Order::where('poll_id', $lastClosedPoll->id)
-                ->select('*')
-                ->get();
+
+            $orders = \App\Models\Order::all()
+                ->where('poll_id', $lastClosedPoll->id)
+                ->last();
+
+            if (!$orders) {
+                throw new \RuntimeException('Не найдены заказы по последнему опросу');
+            }
 
             $orderArr = [];
             $allPrice = 0;
