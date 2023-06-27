@@ -36,12 +36,15 @@ final class OrderHandler implements HandlersInterface
 
             if (stripos($item, ':') === 0) {
                 $item = str_replace(':', '', $item);
-                if ((int)preg_match("/^\d+$/", $item)) {
+                $item = str_replace(',', '.', $item);
+
+                if (preg_match("#^[0-9\.]+$#", $item)) {
                     $orders['price'] = (float)$item;
+                } else {
+                    throw new \RuntimeException('В стоимости недопустимы символы');
                 }
                 continue;
             }
-
             $orders['user_id'] = $method->from->id;
             $orders['user_name'] = $method->from->first_name;
             $name .= preg_replace('/\W+/u', '', $item) . ';';

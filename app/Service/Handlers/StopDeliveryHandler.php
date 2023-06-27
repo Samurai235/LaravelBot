@@ -34,8 +34,7 @@ final class StopDeliveryHandler implements HandlersInterface
         if ($lastClosedPoll) {
 
             $orders = \App\Models\Order::all()
-                ->where('poll_id', $lastClosedPoll->id)
-                ->last();
+                ->where('poll_id', $lastClosedPoll->id);
 
             if (!$orders) {
                 throw new \RuntimeException('Не найдены заказы по последнему опросу');
