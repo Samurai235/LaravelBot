@@ -16,7 +16,9 @@ final class StopPollMessageHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && ($method->text === '/stoppoll@MyTelegramDeliveryBot');
+        return $method instanceof Message
+            && $method->text !== null
+            && ($method->text === '/stoppoll@MyTelegramDeliveryBot');
     }
 
     /**

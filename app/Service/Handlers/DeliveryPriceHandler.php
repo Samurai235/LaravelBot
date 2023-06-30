@@ -15,6 +15,7 @@ final class DeliveryPriceHandler implements HandlersInterface
     public function supports(BaseObject $method): bool
     {
         return $method instanceof Message
+            && $method->text !== null
             && stripos($method->text, '/deliveryprice') === 0
             && !$method->from->isBot;
     }

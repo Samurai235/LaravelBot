@@ -15,7 +15,9 @@ final class StopDeliveryHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && ($method->text === '/stopdelivery@MyTelegramDeliveryBot');
+        return $method instanceof Message
+            && $method->text !== null
+            && ($method->text === '/stopdelivery@MyTelegramDeliveryBot');
     }
 
     /**
@@ -32,8 +34,8 @@ final class StopDeliveryHandler implements HandlersInterface
 
         if ($lastClosedPoll) {
 
-            $orders = \App\Models\Order::all()
-                ->where('poll_id', $lastClosedPoll->id);
+            $orders = \App\Models\Order::where('poll_id', (string)$lastClosedPoll->id)
+                ->get();
 
             if (!$orders) {
                 throw new \RuntimeException('Не найдены заказы по последнему опросу');

@@ -15,7 +15,9 @@ final class StartPollMessageHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && ($method->text === '/startpoll@MyTelegramDeliveryBot');
+        return $method instanceof Message
+            && $method->text !== null
+            && ($method->text === '/startpoll@MyTelegramDeliveryBot');
     }
 
     public function handle(BaseObject $method): void

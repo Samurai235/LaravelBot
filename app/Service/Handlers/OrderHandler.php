@@ -15,7 +15,9 @@ final class OrderHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
+
         return $method instanceof Message
+            && $method->text !== null
             && stripos($method->text, '/order') === 0
             && !$method->from->isBot;
     }
