@@ -15,8 +15,7 @@ final class StopDeliveryHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && ($method->text === '/stopdelivery'
-                || $method->text === '/stopdelivery@MyTelegramDeliveryBot');
+        return $method instanceof Message && ($method->text === '/stopdelivery@MyTelegramDeliveryBot');
     }
 
     /**

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Handlers;
 
-use App\Enum\OptionsFood;
 use App\Service\HandlersInterface;
 
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -25,9 +24,6 @@ final class DeliveryPriceHandler implements HandlersInterface
         /** @var Message $method */
         $tg = Telegram::bot('mybot');
 
-        $deliveryPrice = 0;
-        $clientPrice = 0;
-
         $lastClosedPoll = \App\Models\Poll::where('active', false)
             ->orderBy('created_at', 'desc')
             ->first();
@@ -36,7 +32,7 @@ final class DeliveryPriceHandler implements HandlersInterface
             throw new \RuntimeException('Не найдено опроса. Воспользуйтесь командой запуска');
         }
 
-        $orders = \App\Models\Order::where('poll_id', $lastClosedPoll->id)
+        $orders = \App\Models\Order::where('poll_id', (string)$lastClosedPoll->id)
             ->get();
 
         if (!$orders) {

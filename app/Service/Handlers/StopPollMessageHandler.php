@@ -16,8 +16,7 @@ final class StopPollMessageHandler implements HandlersInterface
 {
     public function supports(BaseObject $method): bool
     {
-        return $method instanceof Message && ($method->text === '/stoppoll'
-                || $method->text === '/stoppoll@MyTelegramDeliveryBot');
+        return $method instanceof Message && ($method->text === '/stoppoll@MyTelegramDeliveryBot');
     }
 
     /**
@@ -46,17 +45,29 @@ final class StopPollMessageHandler implements HandlersInterface
                 ]);
 
             $winKey = null;
-
+            $winCount = 1;
+            $deal = [];
             foreach ($stopPoll->options as $key => $option) {
 
                 if ($option->voterCount === 0) {
                     continue;
                 }
-                $winCount = $option->voterCount;
-                $winKey = $key;
-                if ($winCount === $option->voterCount) {
-                    $winKey = rand($winKey, $key);
+
+                if ($winCount < $option->voterCount) {
+                    $winKey = $key;
+                    $winCount = $option->voterCount;
+                } elseif ($winCount === $option->voterCount) {
+                    $deal[$key] = [
+                        'count' => $option->voterCount,
+                        'key' => $key,
+                    ];
+                    $winKey = $key;
                 }
+
+            }
+
+            if ($deal) {
+                $winKey = array_rand($deal);
             }
 
             if ($winKey !== null) {
