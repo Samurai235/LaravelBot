@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Service\Handlers\DeliveryPriceHandler;
 use App\Service\Handlers\OrderHandler;
 use App\Service\Handlers\StartPollMessageHandler;
 use App\Service\Handlers\PollHandler;
@@ -20,6 +21,7 @@ final class WebhookController extends Controller
         private StopPollMessageHandler  $stopPollMessageHandler,
         private OrderHandler            $orderHandler,
         private StopDeliveryHandler     $deliveryHandler,
+        private DeliveryPriceHandler    $deliveryPriceHandler,
     )
     {
     }
@@ -33,7 +35,7 @@ final class WebhookController extends Controller
         $tg = Telegram::bot('mybot');
         $getWebhookUpdate = $tg->getWebhookUpdate();
         //сделать проверку если прошло 30 мин вызывать stoppoll
-        //так же сделать проверку, для выызова stopdelivery
+        //так же сделать проверку, для вызова stopdelivery
 
         $collection = [];
         $collection[] = $this->pollHandler;
@@ -41,6 +43,7 @@ final class WebhookController extends Controller
         $collection[] = $this->stopPollMessageHandler;
         $collection[] = $this->orderHandler;
         $collection[] = $this->deliveryHandler;
+        $collection[] = $this->deliveryPriceHandler;
         $relatedObject = $getWebhookUpdate->getRelatedObject();
 
         foreach (
