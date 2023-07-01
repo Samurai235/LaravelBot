@@ -15,4 +15,6 @@ db-prepare:
 db-refresh:
 	docker-compose exec app php artisan migrate:refresh --seed
 
-.PHONY: docker
+.PHONY: start
+start:
+	docker-compose up -d
