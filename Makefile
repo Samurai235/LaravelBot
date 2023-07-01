@@ -22,4 +22,8 @@ c:
 .PHONY: composer
 composer:
 	@docker-compose exec app sh -c "composer $(COMMAND_ARGS)"
+
+.PHONY: ecs
+ecs:
+	@docker-compose exec app sh -c "phpcs $(COMMAND_ARGS)"
 endif
