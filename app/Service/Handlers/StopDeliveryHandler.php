@@ -56,6 +56,12 @@ final class StopDeliveryHandler implements HandlersInterface
                 }
             }
 
+           $closedPoll = \App\Models\Poll::where('id', $lastClosedPoll->id)
+                ->update([
+                    'closed' => true,
+                    'updated_at' => now(),
+                ]);
+
             $tg->sendMessage([
                 'chat_id' => $method->chat->id,
                 'parse_mode' => 'HTML',

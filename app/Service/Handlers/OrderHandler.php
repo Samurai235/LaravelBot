@@ -25,6 +25,16 @@ final class OrderHandler implements HandlersInterface
     public function handle(BaseObject $method): void
     {
         /** @var Message $method */
+
+        $lastClosedPoll = \App\Models\Poll::all()
+            ->where('active', false)
+            ->where('closed', false)
+            ->last();
+
+        if (!$lastClosedPoll) {
+            throw new \RuntimeException('Не найдено активного опроса');
+        }
+
         $tg = Telegram::bot('mybot');
         $orders = [];
 
@@ -54,47 +64,42 @@ final class OrderHandler implements HandlersInterface
         $orders['order'] = htmlspecialchars($name);
         unset($item);
 
-        $lastClosedPoll = \App\Models\Poll::where('active', false)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
         $checkDuplicate = \App\Models\Order::where('user_id', $orders['user_id'])
             ->where('poll_id', $lastClosedPoll->id)
             ->first();
 
-        if ($lastClosedPoll) {
-            if ($checkDuplicate) {
-                \App\Models\Order::where('user_id', $orders['user_id'])
-                    ->where('poll_id', $lastClosedPoll->id)
-                    ->update([
-                        'name' => $orders['order'],
-                        'price' => $orders['price'],
-                        'updated_at' => now(),
-                    ]);
-
-                $tg->sendMessage([
-                    'chat_id' => $method->chat->id,
-                    'parse_mode' => 'HTML',
-                    'text' => 'Обновил заказ от ' . $orders['user_name']
-                ]);
-
-            } else {
-                \App\Models\Order::create([
+        if ($checkDuplicate) {
+            \App\Models\Order::where('user_id', $orders['user_id'])
+                ->where('poll_id', $lastClosedPoll->id)
+                ->update([
                     'name' => $orders['order'],
-                    'user_id' => $orders['user_id'],
-                    'user_name' => $orders['user_name'],
-                    'poll_id' => $lastClosedPoll->id,
                     'price' => $orders['price'],
-                    'created_at' => now(),
                     'updated_at' => now(),
                 ]);
 
-                $tg->sendMessage([
-                    'chat_id' => $method->chat->id,
-                    'parse_mode' => 'HTML',
-                    'text' => 'Создал заказ от ' . $orders['user_name']
-                ]);
-            }
+            $tg->sendMessage([
+                'chat_id' => $method->chat->id,
+                'parse_mode' => 'HTML',
+                'text' => 'Обновил заказ от ' . $orders['user_name']
+            ]);
+
+        } else {
+            \App\Models\Order::create([
+                'name' => $orders['order'],
+                'user_id' => $orders['user_id'],
+                'user_name' => $orders['user_name'],
+                'poll_id' => $lastClosedPoll->id,
+                'price' => $orders['price'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $tg->sendMessage([
+                'chat_id' => $method->chat->id,
+                'parse_mode' => 'HTML',
+                'text' => 'Создал заказ от ' . $orders['user_name']
+            ]);
         }
+
     }
 }
