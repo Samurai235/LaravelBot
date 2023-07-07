@@ -49,6 +49,7 @@ final class OrderHandler implements HandlersInterface
             if (stripos($item, ':') === 0) {
                 $item = str_replace(':', '', $item);
                 $item = str_replace(',', '.', $item);
+                $item = str_replace(' ', '', $item);
 
                 if (preg_match("#^[0-9\.]+$#", $item)) {
                     $orders['price'] = (float)$item;
@@ -59,7 +60,7 @@ final class OrderHandler implements HandlersInterface
             }
             $orders['user_id'] = $method->from->id;
             $orders['user_name'] = $method->from->first_name;
-            $name .= preg_replace('/\W+/u', '', $item) . ';';
+            $name .=  htmlspecialchars($item) . ';';
         }
         $orders['order'] = htmlspecialchars($name);
         unset($item);

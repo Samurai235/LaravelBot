@@ -67,7 +67,7 @@ final class StopDeliveryHandler implements HandlersInterface
                 'parse_mode' => 'HTML',
                 'text' => 'Общий заказ для последнего опроса:' . "\n"
                     . $orderText . "\n"
-                    . '<b>Цена: ' . $allPrice . '</b>'
+                    . '<b>Стоимость: ' . $allPrice . '</b>'
             ]);
         }
 
