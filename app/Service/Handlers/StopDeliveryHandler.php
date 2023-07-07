@@ -52,7 +52,7 @@ final class StopDeliveryHandler implements HandlersInterface
             $orderText = '';
             foreach ($orderArr as $arItem) {
                 foreach ($arItem as $item) {
-                    $orderText .= str_replace(' ', '', $item) . "\n";
+                    $orderText .=  $item . "\n";
                 }
             }
 
