@@ -73,7 +73,7 @@ final class OrderHandler implements HandlersInterface
                 ->where('poll_id', $lastClosedPoll->id)
                 ->update([
                     'name' => $orders['order'],
-                    'price' => $orders['price'],
+                    'price' => round($orders['price'],2),
                     'updated_at' => now(),
                 ]);
 
@@ -89,7 +89,7 @@ final class OrderHandler implements HandlersInterface
                 'user_id' => $orders['user_id'],
                 'user_name' => $orders['user_name'],
                 'poll_id' => $lastClosedPoll->id,
-                'price' => $orders['price'],
+                'price' => round($orders['price'],2),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
