@@ -17,8 +17,8 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
-          host: $
-          username: $
-          port: $
-          key: $
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          port: ${{secrets.PORT}}
+          key: ${{secrets.SSHKEY}}
           script: "cd /var/www/html && ./.scripts/deploy.sh"
