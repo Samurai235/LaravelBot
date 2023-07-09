@@ -43,3 +43,17 @@ jobs:
 
       - name: Tests
         run: vendor/bin/phpunit --coverage-clover clover.xml
+  CD_PART:
+    runs-on: ubuntu-latest
+    needs:
+      - CI_PART
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          port: ${{secrets.PORT}}
+          key: ${{secrets.SSHKEY}}
+          script: "cd /var/www/uniplay/data/deploy && ./deploy.sh"
