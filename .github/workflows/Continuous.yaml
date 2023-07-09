@@ -56,4 +56,14 @@ jobs:
           username: ${{secrets.USERNAME}}
           port: ${{secrets.PORT}}
           key: ${{secrets.SSHKEY}}
-          script: "cd /var/www/uniplay/data/deploy && ./deploy.sh"
+          command: |
+            echo "Deployment started ...";
+            cd /var/www/uniplay/data/www/unipoll.sbox.1gt.ru/;
+            (php artisan down) || true;
+            git pull origin master;
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader;
+            php artisan clear-compiled;
+            php artisan optimize;
+            php artisan migrate --force;
+            php artisan up;
+            echo "Deployment finished!";
