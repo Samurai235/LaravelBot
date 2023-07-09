@@ -6,4 +6,4 @@
 
 
 ## Status of last Deployment 
-<img src="https://github.com/Samurai235/LaravelBot/Workflows/Continuous/badge.svg?branch=master"><br>
+![example workflow](https://github.com/Samurai235/LaravelBot/workflows/Continuous/badge.svg)
