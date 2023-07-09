@@ -50,12 +50,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy to server
-        uses: appleboy/ssh-action@master
+        uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{secrets.HOST}}
-          username: ${{secrets.USERNAME}}
-          port: ${{secrets.PORT}}
-          key: ${{secrets.SSHKEY}}
+          user: ${{secrets.USERNAME}}
+          private_key: ${{secrets.SSHKEY}}
           command: |
             echo "Deployment started ...";
             cd /var/www/uniplay/data/www/unipoll.sbox.1gt.ru/;
