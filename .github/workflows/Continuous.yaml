@@ -57,7 +57,7 @@ jobs:
           private_key: ${{secrets.SSHKEY}}
           command: |
             echo "Deployment started ...";
-            cd /var/www/uniplay/data/www/unipoll.sbox.1gt.ru/;
+            cd ${{secrets.DIRECTORY}};
             (php artisan down) || true;
             git pull origin master;
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader;
