@@ -1,8 +1,10 @@
 on:
-  watch:
-    types: [started]
-  release:
-    types: [released]
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   Running:
@@ -14,7 +16,7 @@ jobs:
       - name: Action
         uses: RajvirSingh1313/ReleaseBannerAction@v1.1
         with:
-          repo-content-object: ${{ LaravelBot(github) }}
+          repo-content-object: ${{ toJson(github) }}
           release-version: ${{ github.event.release.tag_name }}
           platform: Both
 
