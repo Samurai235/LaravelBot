@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('message_id');
             $table->string('chat_id');
             $table->boolean('active')->default(true);
+            $table->boolean('closed')->default(false);
             $table->timestamps();
         });
     }

@@ -52,16 +52,22 @@ final class StopDeliveryHandler implements HandlersInterface
             $orderText = '';
             foreach ($orderArr as $arItem) {
                 foreach ($arItem as $item) {
-                    $orderText .= str_replace(' ', '', $item) . "\n";
+                    $orderText .=  $item . "\n";
                 }
             }
+
+           $closedPoll = \App\Models\Poll::where('id', $lastClosedPoll->id)
+                ->update([
+                    'closed' => true,
+                    'updated_at' => now(),
+                ]);
 
             $tg->sendMessage([
                 'chat_id' => $method->chat->id,
                 'parse_mode' => 'HTML',
                 'text' => 'Общий заказ для последнего опроса:' . "\n"
                     . $orderText . "\n"
-                    . '<b>Цена: ' . $allPrice . '</b>'
+                    . '<b>Стоимость: ' . $allPrice . '</b>'
             ]);
         }
 
