@@ -11,23 +11,24 @@ use App\Service\Handlers\PollHandler;
 use App\Service\Handlers\StopPollMessageHandler;
 use App\Service\Handlers\StopDeliveryHandler;
 use Illuminate\Http\Response;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use Throwable;
 
 final class WebhookController extends Controller
 {
     public function __construct(
-        private PollHandler             $pollHandler,
-        private StartPollMessageHandler $startPollMessageHandler,
-        private StopPollMessageHandler  $stopPollMessageHandler,
-        private OrderHandler            $orderHandler,
-        private StopDeliveryHandler     $deliveryHandler,
-        private DeliveryPriceHandler    $deliveryPriceHandler,
-    )
-    {
+        private readonly PollHandler             $pollHandler,
+        private readonly StartPollMessageHandler $startPollMessageHandler,
+        private readonly StopPollMessageHandler  $stopPollMessageHandler,
+        private readonly OrderHandler            $orderHandler,
+        private readonly StopDeliveryHandler     $deliveryHandler,
+        private readonly DeliveryPriceHandler    $deliveryPriceHandler,
+    ) {
     }
 
     /**
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     public function index(): Response
     {
@@ -54,7 +55,7 @@ final class WebhookController extends Controller
             }
             try {
                 $handler->handle($relatedObject);
-            } catch (\Throwable $error) {
+            } catch (Throwable $error) {
                 $tg->sendMessage([
                     'chat_id' => config('telegram.bots.mybot.chat_id'),
                     'text' => $error->getMessage()
@@ -63,6 +64,4 @@ final class WebhookController extends Controller
         }
         return new Response();
     }
-
-
 }

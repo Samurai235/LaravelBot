@@ -1,0 +1,69 @@
+name: Continuous
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  CI_PART:
+    name: CI_PART PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.1]
+        experimental: [false]
+        include:
+          - php: 8.1
+            analysis: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v2
+
+     # - name: Coding standards
+     #   if: matrix.analysis
+     #    run: vendor/bin/phpcs
+      #- name: Static analysis
+       # if: matrix.analysis
+       # run: vendor/bin/phpstan
+
+      - name: Tests
+        run: vendor/bin/phpunit --coverage-clover clover.xml
+  CD_PART:
+    runs-on: ubuntu-latest
+    needs:
+      - CI_PART
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          port: ${{secrets.PORT}}
+          key: ${{secrets.SSHKEY}}
+          command: |
+            echo "Deployment started ...";
+            cd /var/www/uniplay/data/www/unipoll.sbox.1gt.ru/;
+            (php artisan down) || true;
+            git pull origin master;
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader;
+            php artisan clear-compiled;
+            php artisan optimize;
+            php artisan migrate --force;
+            php artisan up;
+            echo "Deployment finished!";

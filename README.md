@@ -5,4 +5,5 @@
 4. Вызвать команду `docker-compose exec app php artisan webhook:set <src>`
 
 
-# Проверяем деплой
+## Status of last Deployment 
+![example workflow](https://github.com/Samurai235/LaravelBot/workflows/Continuous/badge.svg)
