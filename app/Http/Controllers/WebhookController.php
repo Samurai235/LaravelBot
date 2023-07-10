@@ -11,7 +11,6 @@ use App\Service\Handlers\PollHandler;
 use App\Service\Handlers\StopPollMessageHandler;
 use App\Service\Handlers\StopDeliveryHandler;
 use Illuminate\Http\Response;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Throwable;
 
@@ -27,9 +26,6 @@ final class WebhookController extends Controller
     ) {
     }
 
-    /**
-     * @throws TelegramSDKException
-     */
     public function index(): Response
     {
 
