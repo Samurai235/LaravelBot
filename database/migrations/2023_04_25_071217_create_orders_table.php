@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('user_name');
             $table->string('poll_id');
-            $table->float('price','5','2')->default(0);
+            $table->float('price','6','2')->default(0);
             $table->timestamps();
         });
     }
