@@ -60,18 +60,18 @@ final class OrderHandler implements HandlersInterface
             }
             $orders['user_id'] = $method->from->id;
             $orders['user_name'] = $method->from->first_name;
-            $name .=  htmlspecialchars($item) . ';';
+            $name .=  htmlspecialchars(trim($item)) . ';';
         }
         $orders['order'] = htmlspecialchars($name);
         unset($item);
 
         $checkDuplicate = \App\Models\Order::where('user_id', $orders['user_id'])
-            ->where('poll_id', $lastClosedPoll->id)
+            ->where('poll_id', (string)$lastClosedPoll->id)
             ->first();
 
         if ($checkDuplicate) {
             \App\Models\Order::where('user_id', $orders['user_id'])
-                ->where('poll_id', $lastClosedPoll->id)
+                ->where('poll_id', (string)$lastClosedPoll->id)
                 ->update([
                     'name' => $orders['order'],
                     'price' => round($orders['price'],2),

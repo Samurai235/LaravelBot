@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Handlers;
 
 use App\Service\HandlersInterface;
-
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\BaseObject;
 use Telegram\Bot\Objects\Message;
@@ -45,7 +44,8 @@ final class DeliveryPriceHandler implements HandlersInterface
         $resultMessage = '';
 
         foreach ($orders as $order) {
-            $resultMessage .= '<b>' . $order->user_name . '</b>' . ' торчит: ' . $order->price + $clientPrice .
+            $resultMessage .= '<b>' . $order->user_name . '</b>' . ' торчит: ' .
+                round($order->price, 2) + round($clientPrice, 2) .
                 ' руб' . "\n";
         }
 
