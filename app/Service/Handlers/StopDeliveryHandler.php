@@ -56,7 +56,7 @@ final class StopDeliveryHandler implements HandlersInterface
                 }
             }
 
-           $closedPoll = \App\Models\Poll::where('id', $lastClosedPoll->id)
+           $closedPoll = \App\Models\Poll::where('id', (string)$lastClosedPoll->id)
                 ->update([
                     'closed' => true,
                     'updated_at' => now(),
