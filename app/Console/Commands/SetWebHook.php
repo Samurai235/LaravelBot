@@ -31,6 +31,7 @@ class SetWebHook extends Command
     {
         $response = Http::get('https://api.telegram.org/bot' . config('telegram.bots.mybot.token')
             . '/setWebhook?url=' . $this->argument('link'));
+        dd($response->body());
         if ($response->body()->ok) {
             $this->info('Webhook command was successful!');
             return Command::SUCCESS;
