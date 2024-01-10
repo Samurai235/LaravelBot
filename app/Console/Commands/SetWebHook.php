@@ -33,10 +33,12 @@ class SetWebHook extends Command
             . '/setWebhook?url=' . $this->argument('link'));
         if ($response->ok()) {
             $this->info('Webhook command was successful!');
+
             return Command::SUCCESS;
         } else {
             $this->error('Webhook command was error!');
             $this->error(json_decode($response->body())->description);
+
             return Command::FAILURE;
         }
     }
