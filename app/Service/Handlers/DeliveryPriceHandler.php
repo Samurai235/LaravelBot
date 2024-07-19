@@ -15,7 +15,7 @@ final class DeliveryPriceHandler implements HandlersInterface
     {
         return $method instanceof Message
             && $method->text !== null
-            && stripos($method->text, '/deliveryprice') === 0
+            && (stripos($method->text, '/deliveryprice') === 0 || stripos($method->text, '/setdelivery') === 0)
             && !$method->from->isBot;
     }
 
@@ -25,22 +25,24 @@ final class DeliveryPriceHandler implements HandlersInterface
         $tg = Telegram::bot('mybot');
 
         $lastClosedPoll = \App\Models\Poll::where('active', false)
-            ->orderBy('created_at', 'desc')
-            ->first();
+                                          ->orderBy('created_at', 'desc')
+                                          ->first()
+        ;
 
         if (!$lastClosedPoll) {
             throw new \RuntimeException('Не найдено опроса. Воспользуйтесь командой запуска');
         }
 
-        $orders = \App\Models\Order::where('poll_id', (string)$lastClosedPoll->id)
-            ->get();
+        $orders = \App\Models\Order::where('poll_id', (string) $lastClosedPoll->id)
+                                   ->get()
+        ;
 
         if (!$orders) {
             throw new \RuntimeException('Не найдено заказов для последнего опроса. Воспользуйтесь командой для заказа');
         }
 
-        $deliveryPrice = (int)preg_replace('/[^,.0-9]/', '', $method->text);
-        $clientPrice = $deliveryPrice / (int)$orders->count();
+        $deliveryPrice = (int) preg_replace('/[^,.0-9]/', '', $method->text);
+        $clientPrice = $deliveryPrice / (int) $orders->count();
         $resultMessage = '';
 
         foreach ($orders as $order) {
@@ -52,7 +54,7 @@ final class DeliveryPriceHandler implements HandlersInterface
         $tg->sendMessage([
             'chat_id' => $method->chat->id,
             'parse_mode' => 'HTML',
-            'text' => 'Итоговая сумма с доставкой: ' . "\n" . $resultMessage
+            'text' => 'Итоговая сумма с доставкой: ' . "\n" . $resultMessage,
         ]);
     }
 }
