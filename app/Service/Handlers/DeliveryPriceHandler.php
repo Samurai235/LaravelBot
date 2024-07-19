@@ -15,7 +15,10 @@ final class DeliveryPriceHandler implements HandlersInterface
     {
         return $method instanceof Message
             && $method->text !== null
-            && (stripos($method->text, '/deliveryprice') === 0 || stripos($method->text, '/setdelivery') === 0)
+            && (
+                stripos($method->text, '/deliveryprice') === 0 ||
+                stripos($method->text, '/setdelivery') === 0
+            )
             && !$method->from->isBot;
     }
 
