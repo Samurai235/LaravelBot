@@ -46,26 +46,20 @@ final class StopPollMessageHandler implements HandlersInterface
                     'updated_at' => now(),
                 ]);
 
-            $winKey = null;
             $winCount = 1;
             $deal = [];
+            
             foreach ($stopPoll->options as $key => $option) {
-
-                if ($option->voterCount === 0) {
+                if ($option->voterCount < $winCount) {
                     continue;
-                }
-
-                if ($winCount < $option->voterCount) {
-                    $winKey = $key;
+                } elseif ($winCount < $option->voterCount) {
+                    $deal = [];
                     $winCount = $option->voterCount;
-                } elseif ($winCount === $option->voterCount) {
-                    $deal[$key] = [
-                        'count' => $option->voterCount,
-                        'key' => $key,
-                    ];
-                    $winKey = $key;
                 }
-
+                $deal[$key] = [
+                    'count' => $option->voterCount,
+                    'key' => $key,
+                ];
             }
 
             if ($deal) {
